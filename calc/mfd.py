@@ -19,13 +19,21 @@ def nu_to_a(nu):
     """ Convert the Gutenberg-Richter Nu value into an a-value. """
     return (math.log10(nu))
 
-def trunc_GR_CDF(b, mag, min_mag, max_mag):
+def trunc_GR_CDF(params):
     # From equation 2.4 in Baker "Introduction to Probabilistic Seismic Hazard Analysis"
+    b = params.get('b')
+    mag = params.get('mag')
+    min_mag = params.get('min_mag')
+    max_mag = params.get('max_mag')
     assert (min_mag < max_mag), "Minimum magnitude needs to be less than maximum magnitude!"
     F_M = (1 - math.pow(10, -b*(mag - min_mag))) / (1 - math.pow(10, -b*(max_mag - min_mag)))
     return F_M
 
-def trunc_GR_PDF(b, mag, min_mag, max_mag):
+def trunc_GR_PDF(params):
+    b = params.get('b')
+    mag = params.get('mag')
+    min_mag = params.get('min_mag')
+    max_mag = params.get('max_mag')
     f_M = (b * math.log(2.1) * math.pow(10, -b*(mag - min_mag))) / (1 - math.pow(10, -b*(max_mag - min_mag)))
     return f_M
 
@@ -33,6 +41,9 @@ def phi(x):
     """ Cumulative distribution function for the standard normal distribution. """
     return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
 
-def ProbPGA(x, lnPGA, StDevlnPGA):
+def ProbPGA(params):
     # From equation 2.15 in Baker "Introduction to Probabilistic Seismic Hazard Analysis"
+    targetPGA = params.get('targetPGA')
+    lnPGA = params.get('lnPGA')
+    StDevlnPGA = params.get('StDevlnPGA')
     return (1 - phi((math.log(x) - lnPGA) / StDevlnPGA))
